@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="volumeDiv"></div>
+		<div id="timerDiv"></div>
+		<script type="text/javascript">
+			let count = 0;
+			let last = 0;
+			navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
+				let ctx = new AudioContext();
+				let src = ctx.createMediaStreamSource(stream);
+				let an = ctx.createAnalyser();
+				src.connect(an);
+				an.fftSize = 256;
+				let data = new Uint8Array(an.frequencyBinCount);
+				// window.setInterval(() => {
+				// 	an.getByteTimeDomainData(data);
+				// 	let vol1 = 0;
+				// 	let vol2 = 0;
+				// 	for (let i = 0; i < data.length; i++) {
+				// 		vol2 = Math.abs(data[i] - 128);
+				// 		if (vol2 > vol1) {
+				// 			vol1 = vol2;
+				// 		}
+				// 	}
+				// 	document.getElementById("volumeDiv").innerText = vol1;
+				// 	if (vol1 > 1000) {
+				// 		last = new Date().getTime();
+				// 	}
+				// }, 10);
+				window.setInterval(() => {
+					an.getByteFrequencyData(data);
+					let vol1 = 0;
+					let vol2 = 0;
+					for (let i = 0; i < data.length; i++) {
+						if (data[i] > 0) {
+							vol1 = vol1 + data[i];
+							vol2 = vol2 + 1;
+						}
+					}
+					// vol1 = vol1 / data.length;
+					document.getElementById("volumeDiv").innerText = vol1;
+					if (vol1 > 1000) {
+						last = new Date().getTime();
+					}
+				}, 10);
+				window.setInterval(() => {
+					if (new Date().getTime() - last < 1000) {
+						count = count + 1;
+						document.getElementById("timerDiv").innerText = count;
+					}
+				}, 1000)
+			}).catch((e) => {
+				window.confirm(e);
+			})
+		</script>
+	</body>
+</html>
