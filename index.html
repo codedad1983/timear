@@ -39,7 +39,7 @@
 					let vol2 = 0;
 					for (let i = 0; i < data.length; i++) {
 						// 简单处理噪音：排除第一个，从第二个开始求和
-						if (i <= 0) {
+						if (i <= 9) {
 							continue;
 						}
 						if (data[i] > 0) {
