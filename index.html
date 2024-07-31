@@ -38,6 +38,10 @@
 					let vol1 = 0;
 					let vol2 = 0;
 					for (let i = 0; i < data.length; i++) {
+						// 简单处理噪音：排除第一个，从第二个开始求和
+						if (i == 0) {
+							continue;
+						}
 						if (data[i] > 0) {
 							vol1 = vol1 + data[i];
 							vol2 = vol2 + 1;
